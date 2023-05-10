@@ -18,11 +18,12 @@ const getAllServicePrices = function () {
 			service2 = prompt('Какой дополнительный тип услуги нужен?');
 		}
 		
-		sum = prompt('Сколько это будет стоить?');
+		sum += +prompt('Сколько это будет стоить?');
 		while (!isNumber(sum)) {
 			sum += +prompt('Сколько это будет стоить?');
 		};
 	}
+	console.log(sum);
 	
 	return sum;
 };
@@ -77,7 +78,7 @@ const getRollBackMessage = function (price) {
 	}
 };
 function getFullPrice(scrPr, allServPrice) {
-	return scrPr + allServPrice;
+	return +scrPr + allServPrice;
  }
 function getTitle  (titleWord)  {
 	return titleWord.trim().split('').map((item, index) => index === 0 ? item.toUpperCase() : item.toLowerCase()).join('');

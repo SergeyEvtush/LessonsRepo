@@ -18,10 +18,11 @@ const getAllServicePrices = function () {
 			service2 = prompt('Какой дополнительный тип услуги нужен?');
 		}
 		
-		sum += +prompt('Сколько это будет стоить?');
+		sum = +prompt('Сколько это будет стоить?');
 		while (!isNumber(sum)) {
-			sum += +prompt('Сколько это будет стоить?');
+			sum = +prompt('Сколько это будет стоить?');
 		};
+		sum += sum;
 	}
 	console.log(sum);
 	

@@ -1,7 +1,19 @@
 "use strict";
 
+const titleD = document.getElementsByTagName('h1')[0];
+const handlerBtn = document.getElementsByClassName('handler_btn');
+const screenBtn = document.querySelector('.screen-btn');
+const percent=document.querySelectorAll('.other-items.percent');
+const number=document.querySelectorAll('.other-items.number');
+const inputRange = document.querySelector('.rollback').children[0].children[0];
+const spanRange = document.querySelector('.rollback').children[0].children[1];
+const totalInput = document.getElementsByClassName('total-input');
+let screen = document.querySelectorAll('.screen');
+console.dir(screen);
+/* console.log(percent); */
 
-const appData = {
+
+/* const appData = {
 		title:'', 
 		screens:[], 
 		screenPrice:0, 
@@ -124,8 +136,8 @@ console.log(typeof(num));
 			appData.getServicePercentPrices(appData.fullPrice, appData.rollback);
 			appData.logger();
 	 }
-};
-appData.start();
+}; */
+//appData.start();
 
  
 

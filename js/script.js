@@ -5,12 +5,18 @@ const handlerBtn = document.getElementsByClassName('handler_btn');
 const screenBtn = document.querySelector('.screen-btn');
 const percent=document.querySelectorAll('.other-items.percent');
 const number=document.querySelectorAll('.other-items.number');
-const inputRange = document.querySelector('.rollback').children[0].children[0];
-const spanRange = document.querySelector('.rollback').children[0].children[1];
-const totalInput = document.getElementsByClassName('total-input');
+const inputRange = document.querySelector('.rollback').children[0].querySelector('[type="range"]');
+const spanRange = document.querySelector('.rollback').children[0].querySelector('.range-value');
+const totalInput0 = document.getElementsByClassName('total-input')[0];
+const totalInput1 = document.getElementsByClassName('total-input')[1];
+const totalInput2 = document.getElementsByClassName('total-input')[2];
+const totalInput3 = document.getElementsByClassName('total-input')[3];
+const totalInput4 = document.getElementsByClassName('total-input')[4];
 let screen = document.querySelectorAll('.screen');
-console.dir(screen);
-/* console.log(percent); */
+
+
+
+
 
 
 /* const appData = {

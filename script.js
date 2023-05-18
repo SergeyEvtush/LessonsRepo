@@ -81,18 +81,32 @@ numberBook.forEach(el => {
 const titleBook3 = numberBook[2].querySelector('a');
 const listChaptersBook2 = numberBook[1].querySelectorAll('li');
 const listChaptersBook5 = numberBook[4].querySelectorAll('li');
+const listChaptersBook6 = numberBook[5].querySelectorAll('li');
 const ulBook2 = numberBook[1].querySelector('ul');
 const ulBook5 = numberBook[4].querySelector('ul');
+const ulBook6 = numberBook[5].querySelector('ul');
+const li = document.createElement('li');
+const newChaptersBook6 = returArrayFromNode(listChaptersBook6);
+
+newChaptersBook6.push(li);
+li.innerText = 'Глава 8: За пределами ES6';
 
 body.style.backgroundImage = "url('./image/you-dont-know-js.jpg')";
 adv.style.display = "none";
 titleBook3.innerText = "Книга 3. this и Прототипы Объектов";
 ulBook2.innerHTML = '';
 ulBook5.innerHTML = '';
+ulBook6.innerHTML = '';
 
 returnNewSortedArr(returArrayFromNode(listChaptersBook2)).forEach((el) => { 
 	ulBook2.append(el);
 });
 returnNewSortedArr(returArrayFromNode(listChaptersBook5)).forEach((el) => { 
 	ulBook5.append(el);
+});
+
+
+
+returnNewSortedArr(returArrayFromNode(newChaptersBook6)).forEach(el => { 
+	ulBook6.append(el);
 });

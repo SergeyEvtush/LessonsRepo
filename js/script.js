@@ -49,11 +49,44 @@ const appData = {
 	servicesPercent: {}, 
 	servicesNumber: {}, 
 	rollback: 10,
+	screensCount: 10,
 	init: function () { 
 		appData.addTitle();
-		startBtn.addEventListener('click', appData.start);
-		screenBtn.addEventListener('click',appData.addScreenBlock);
+		startBtn.addEventListener('click', () => {
+			if (!appData.isError()) {
+				appData.start();
+			} else { 
+				console.error("ошибка при вводе данных");
+				
+			}
+		}
+		);
+		screenBtn.addEventListener('click', appData.addScreenBlock);
+		inputRange.addEventListener('change', () => { 
+			appData.changeSpan(inputRange.value);
+			appData.rollback = inputRange.value;
+		});
 	},
+	isError: function () {
+		screens = document.querySelectorAll('.screen');
+		const arrError = [];
+		screens.forEach(el => {
+			const select = el.querySelector('select');
+			const input = el.querySelector('input');
+			if (select.value === '' || !appData.isNumber(input.value.trim())) {
+				arrError.push(true);
+			} else { 
+				arrError.push(false);
+			}
+		});
+		
+		
+		if (arrError.includes(true)) {
+			return true;
+		} else { 
+			return false;
+		}
+	 },
 	addTitle: function () {
 	
 		document.title = titleD.textContent;
@@ -64,7 +97,6 @@ const appData = {
 		
 	 },
 	start: function () {
-		
 		appData.addScreens();
 		appData.addServices();
 		appData.addPrices();
@@ -75,9 +107,10 @@ const appData = {
 	},
 	showResult: function () {
 		totalInput0.value = appData.screenPrice;
+		totalInput1.value = appData.screensCount;
 		totalInput2.value = appData.servicePricesPersent + appData.servicePricesNumber;
 		totalInput3.value = appData.fullPrice;
-
+		totalInput4.value = appData.servicePercentPrice;
 	 },
 	//проверка на число
 	isNumber : function (num) {
@@ -86,19 +119,20 @@ const appData = {
 		return !isNaN(parseFloat(num))&&isFinite(num);
 	},
 	addScreens: function () {
-		screens = document.querySelectorAll('.screen')
+		screens = document.querySelectorAll('.screen');
 		screens.forEach((screen,index) => { 
 			const select = screen.querySelector('select');
 			const input = screen.querySelector('input');
 			const selectName = select.options[select.selectedIndex].textContent;
+			const count = input.value;
 			this.screens.push({
 				id: index,
 				name: selectName,
-				price: +input.value * +select.value
+				price: +input.value * +select.value,
+				count:+count
 			});
 				
 console.log(appData.screens);
-
 		});
 
 	},
@@ -125,19 +159,19 @@ console.log(appData.screens);
 	 },
 
 	addPrices: function () {
-		appData.screenPrice = this.screens.reduce((acc, el) => acc + el.price, 0);//усложненное задание 2
+		appData.screenPrice = this.screens.reduce((acc, el) => acc + el.price, 0);
 		for (const key in appData.servicesNumber) {
 			appData.servicePricesNumber += appData.servicesNumber[key];
 		}
 		for (const key in appData.servicesPercent) {
 			appData.servicePricesPersent +=appData.screenPrice*(appData.servicesPercent[key]/100) ;
 		}
-		appData.fullPrice=+appData.screenPrice + appData.servicePricesNumber+appData.servicePricesPersent;
+		
+		appData.screensCount=appData.screens.reduce((acc, cur) => acc + cur.count, 0);
+		appData.fullPrice = +appData.screenPrice + appData.servicePricesNumber + appData.servicePricesPersent;
+		appData.servicePercentPrice= Math.ceil(appData.fullPrice - (appData.fullPrice * (appData.rollback / 100)));
 	},
 	
-	 getServicePercentPrices:function(fPrice,rBack) { 
-		appData.servicePercentPrice= Math.ceil(fPrice - (fPrice * (rBack / 100)));
-	},
 	logger: function () { 
 		for (const key in this) {
 			if (Object.hasOwnProperty.call(this, key)) {
@@ -147,7 +181,9 @@ console.log(appData.screens);
 			}
 		}
 	},
-
+	changeSpan: function (num) {
+		spanRange.innerText = `${num}%`;
+	 }       
 };
 appData.init();
 

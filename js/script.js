@@ -58,38 +58,23 @@ const appData = {
 			inputRange.value = 0;
 			this.changeSpan(inputRange.value);
 
-			percent.forEach(el => { 
-				const check = el.querySelector('input[type=checkbox]');
-				if (check.checked) { 
-					check.checked=false;
-				}
-				
-			});
-			number.forEach(el => { 
-				const check = el.querySelector('input[type=checkbox]');
-				if (check.checked) { 
-					check.checked=false;
-				}
-				
-			});
 			screens.forEach((el, index) => {
 				if (index > 0) {
 					el.remove();
 				}
 				if (index === 0) { 
-					const select = el.querySelector('select');
-					const input = el.querySelector('input');
-					select.value = '';
-					input.value = '';
+					el.querySelector('select').value = '';
+					el.querySelector('input').value = '';
 				}
-				document.querySelectorAll('.main-total__items input');
-				document.querySelectorAll('.main-total__items input').forEach(el => { 
-					el.value = '0';
-				});
-				
+			});
+
+			document.querySelectorAll('.main-total__items input').forEach(el => { 
+				el.value = '0';
 			});
 			
-			
+			document.querySelectorAll('.custom-checkbox').forEach(el => { 
+				el.checked = false;
+			});
 		});
 
 		screenBtn.addEventListener('click', appData.addScreenBlock);

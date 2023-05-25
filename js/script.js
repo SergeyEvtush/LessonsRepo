@@ -19,23 +19,7 @@ const totalInput3 = document.getElementsByClassName('total-input')[3];
 const totalInput4 = document.getElementsByClassName('total-input')[4];
 let screens = document.querySelectorAll('.screen');
 
-/*
-1) Запретить нажатие кнопки Рассчитать если не выбран ни один тип экрана в выпадающем списке и не введено их количество.
- Учесть что блоков с типом экранов может быть несколько, но пустых (незаполненных) элементов быть не должно
 
-2) Повесить на input[type=range] (в блоке с классом .rollback) обработчик события. 
-При перемещении ползунка значение под ним (в элементе span) должно меняться. 
-А так же это значение должно заноситься в свойство rollback нашего объекта для последующих расчетов!
-
-3) В нашем объекте присутствует метод getServicePercentPrice.
- Данный метод рассчитывает доход с учетом отката посреднику.
-  Перенести его логику в метод addPrices и выводить в поле с подписью "Стоимость с учетом отката"
-4) В методе addScreens мы добавляем в свойство appData.
-screens новые объекты.
- Добавить свойство count в которое занести количество экранов из input.
-  В методе addPrices посчитать общее количество экранов и 
-  вывести на страницу итоговое значение в поле с подписью "Количество экранов"
-5) Удалить из проекта метод getRollbackMessage */
 
 const appData = {
 		title:'', 
@@ -51,20 +35,68 @@ const appData = {
 	rollback: 10,
 	screensCount: 10,
 	init: function () { 
-		appData.addTitle();
+		this.addTitle();
+
 		startBtn.addEventListener('click', () => {
-			if (!appData.isError()) {
-				appData.start();
+			if (!this.isError()) {
+				this.start();
+				resetBtn.style.display = 'block';
+				startBtn.style.display = 'none';
 			} else { 
 				console.error("ошибка при вводе данных");
 				
 			}
+			console.log(screens.length);
+			
 		}
 		);
+
+		resetBtn.addEventListener('click', () => { 
+				resetBtn.style.display = 'none';
+				startBtn.style.display = 'block';
+		
+			inputRange.value = 0;
+			this.changeSpan(inputRange.value);
+
+			percent.forEach(el => { 
+				const check = el.querySelector('input[type=checkbox]');
+				if (check.checked) { 
+					check.checked=false;
+				}
+				
+			});
+			number.forEach(el => { 
+				const check = el.querySelector('input[type=checkbox]');
+				if (check.checked) { 
+					check.checked=false;
+				}
+				
+			});
+			screens.forEach((el, index) => {
+				if (index > 0) {
+					el.remove();
+				}
+				if (index === 0) { 
+					const select = el.querySelector('select');
+					const input = el.querySelector('input');
+					select.value = '';
+					input.value = '';
+				}
+				document.querySelectorAll('.main-total__items input');
+				document.querySelectorAll('.main-total__items input').forEach(el => { 
+					el.value = '0';
+				});
+				
+			});
+			
+			
+		});
+
 		screenBtn.addEventListener('click', appData.addScreenBlock);
+
 		inputRange.addEventListener('change', () => { 
-			appData.changeSpan(inputRange.value);
-			appData.rollback = inputRange.value;
+			this.changeSpan(inputRange.value);
+			this.rollback = inputRange.value;
 		});
 	},
 	isError: function () {
@@ -94,28 +126,27 @@ const appData = {
 	addScreenBlock: function () {
 		const cloneScreen = screens[0].cloneNode(true);
 		screens[screens.length - 1].after(cloneScreen);
-		
+	},
+	deleteScreens: function () {
+		if (screens.length > 1) { 
+			screens.length = 1;
+		}
 	 },
 	start: function () {
-		appData.addScreens();
-		appData.addServices();
-		appData.addPrices();
-		appData.showResult();
-			/* 
-			appData.getServicePercentPrices(appData.fullPrice, appData.rollback);
-			appData.logger(); */
+		this.addScreens();
+		this.addServices();
+		this.addPrices();
+		this.showResult();
 	},
 	showResult: function () {
-		totalInput0.value = appData.screenPrice;
-		totalInput1.value = appData.screensCount;
-		totalInput2.value = appData.servicePricesPersent + appData.servicePricesNumber;
-		totalInput3.value = appData.fullPrice;
-		totalInput4.value = appData.servicePercentPrice;
+		totalInput0.value = this.screenPrice;
+		totalInput1.value = this.screensCount;
+		totalInput2.value = this.servicePricesPersent + this.servicePricesNumber;
+		totalInput3.value = this.fullPrice;
+		totalInput4.value = this.servicePercentPrice;
 	 },
 	//проверка на число
 	isNumber : function (num) {
-
-
 		return !isNaN(parseFloat(num))&&isFinite(num);
 	},
 	addScreens: function () {
@@ -132,7 +163,7 @@ const appData = {
 				count:+count
 			});
 				
-console.log(appData.screens);
+console.log(this.screens);
 		});
 
 	},
@@ -142,7 +173,7 @@ console.log(appData.screens);
 			const label = el.querySelector('label');
 			const input = el.querySelector('input[type=text]');
 			if (check.checked) { 
-				appData.servicesPercent[label.textContent] = +input.value;
+				this.servicesPercent[label.textContent] = +input.value;
 			}
 			
 		});
@@ -151,7 +182,7 @@ console.log(appData.screens);
 			const label = el.querySelector('label');
 			const input = el.querySelector('input[type=text]');
 			if (check.checked) { 
-				appData.servicesNumber[label.textContent] = +input.value;
+				this.servicesNumber[label.textContent] = +input.value;
 			}
 			
 		});
@@ -159,17 +190,17 @@ console.log(appData.screens);
 	 },
 
 	addPrices: function () {
-		appData.screenPrice = this.screens.reduce((acc, el) => acc + el.price, 0);
-		for (const key in appData.servicesNumber) {
-			appData.servicePricesNumber += appData.servicesNumber[key];
+		this.screenPrice = this.screens.reduce((acc, el) => acc + el.price, 0);
+		for (const key in this.servicesNumber) {
+			this.servicePricesNumber += this.servicesNumber[key];
 		}
-		for (const key in appData.servicesPercent) {
-			appData.servicePricesPersent +=appData.screenPrice*(appData.servicesPercent[key]/100) ;
+		for (const key in this.servicesPercent) {
+			this.servicePricesPersent +=this.screenPrice*(this.servicesPercent[key]/100) ;
 		}
 		
-		appData.screensCount=appData.screens.reduce((acc, cur) => acc + cur.count, 0);
-		appData.fullPrice = +appData.screenPrice + appData.servicePricesNumber + appData.servicePricesPersent;
-		appData.servicePercentPrice= Math.ceil(appData.fullPrice - (appData.fullPrice * (appData.rollback / 100)));
+		this.screensCount=this.screens.reduce((acc, cur) => acc + cur.count, 0);
+		this.fullPrice = +this.screenPrice + this.servicePricesNumber + this.servicePricesPersent;
+		this.servicePercentPrice= Math.ceil(this.fullPrice - (this.fullPrice * (this.rollback / 100)));
 	},
 	
 	logger: function () { 

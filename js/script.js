@@ -5,6 +5,9 @@ const handlerBtn = document.getElementsByClassName('handler_btn');
 const startBtn = document.getElementsByClassName('handler_btn')[0];
 const resetBtn = document.getElementsByClassName('handler_btn')[1];
 const screenBtn = document.querySelector('.screen-btn');
+const cmsVariants = document.querySelector('.hidden-cms-variants');
+const selectVariant=cmsVariants.querySelector('select');
+const cmsOpen = document.querySelector('#cms-open');
 
 const percent=document.querySelectorAll('.other-items.percent');
 const number = document.querySelectorAll('.other-items.number');
@@ -51,39 +54,58 @@ const appData = {
 		}
 		);
 
-		resetBtn.addEventListener('click', () => { 
-				resetBtn.style.display = 'none';
-				startBtn.style.display = 'block';
-		
-			inputRange.value = 0;
-			this.changeSpan(inputRange.value);
+		resetBtn.addEventListener('click', this.reset);
 
-			screens.forEach((el, index) => {
-				if (index > 0) {
-					el.remove();
-				}
-				if (index === 0) { 
-					el.querySelector('select').value = '';
-					el.querySelector('input').value = '';
-				}
-			});
-
-			document.querySelectorAll('.main-total__items input').forEach(el => { 
-				el.value = '0';
-			});
-			
-			document.querySelectorAll('.custom-checkbox').forEach(el => { 
-				el.checked = false;
-			});
-		});
-
-		screenBtn.addEventListener('click', appData.addScreenBlock);
+		screenBtn.addEventListener('click', this.addScreenBlock);
 
 		inputRange.addEventListener('change', () => { 
 			this.changeSpan(inputRange.value);
 			this.rollback = inputRange.value;
 		});
+		cmsOpen.addEventListener('click', () => { 
+			if (cmsOpen.checked) {
+				cmsVariants.style.display = 'flex';
+			} else { 
+				cmsVariants.style.display = 'none';
+			}
+		});
+		selectVariant.addEventListener('change', () => { 
+				if (selectVariant.value === "other") {
+					cmsVariants.querySelector('.main-controls__input').style.display = "block";
+			}
+		});
+		
+		
 	},
+	reset: function () {
+		resetBtn.style.display = 'none';
+		startBtn.style.display = 'block';
+
+	inputRange.value = 0;
+	spanRange.innerText=inputRange.value;
+
+	screens.forEach((el, index) => {
+		if (index > 0) {
+			el.remove();
+		}
+		if (index === 0) { 
+			el.querySelector('select').value = '';
+			el.querySelector('input').value = '';
+		}
+	});
+
+	document.querySelectorAll('.main-total__items input').forEach(el => { 
+		el.value = '0';
+	});
+	
+	document.querySelectorAll('.custom-checkbox').forEach(el => { 
+		el.checked = false;
+	});
+	selectVariant.value = '';
+	cmsVariants.style.display = 'none';
+
+
+	 },
 	isError: function () {
 		screens = document.querySelectorAll('.screen');
 		const arrError = [];
@@ -183,8 +205,14 @@ console.log(this.screens);
 			this.servicePricesPersent +=this.screenPrice*(this.servicesPercent[key]/100) ;
 		}
 		
-		this.screensCount=this.screens.reduce((acc, cur) => acc + cur.count, 0);
-		this.fullPrice = +this.screenPrice + this.servicePricesNumber + this.servicePricesPersent;
+		this.screensCount = this.screens.reduce((acc, cur) => acc + cur.count, 0);
+
+		if (selectVariant.value === '50') {
+			this.fullPrice = (+this.screenPrice + this.servicePricesNumber + this.servicePricesPersent) + ((+this.screenPrice + this.servicePricesNumber + this.servicePricesPersent) / 2);
+		} else { 
+			this.fullPrice = +this.screenPrice + this.servicePricesNumber + this.servicePricesPersent;
+		}
+		
 		this.servicePercentPrice= Math.ceil(this.fullPrice - (this.fullPrice * (this.rollback / 100)));
 	},
 	
